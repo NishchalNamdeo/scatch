@@ -1,33 +1,18 @@
 const express = require("express");
-const userModels = require("../models/user-models");
 const router = express.Router();
-const bcrypt = require("bcrypt");
+const {registerUser, loginUser, logout} = require("../controllers/authController")
 
-router.get("/", function(req, res){
+router.get("/", function (req, res) {
     res.send("hello ji user")
 })
 
+router.post("/register", registerUser );
 
-router.post("/register", async function(req, res){
-    try{
-       let {email, password, fullname } = req.body;
-       bcrypt.genSalt(10, function(err, salt){
-        bcrypt.hash(password, salt, function(err, hash){
-            if(err) return res.send(err.message);
-            else res.send(hash);
-        })
-       })
-       let user =  await userModels.create({
-          email,
-          password,
-          fullname,
-        });
-        res.send(user);
-    }catch(err){
-        res.send(err.message);
-    }
+router.post("/login", loginUser);
 
-});
+router.get("/logout", logout);
+
+
 
 
 module.exports = router;
